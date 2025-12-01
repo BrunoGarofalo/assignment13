@@ -1,264 +1,148 @@
-# 📦 Project Setup
+# Calculator Instructions
+
+
+## Table of Contents
+
+* Prerequisites
+* Setup
+* Running Tests
+* Docker
+* License
 
 ---
 
-# 🧩 1. Install Homebrew (Mac Only)
+## Prerequisites
 
-> Skip this step if you're on Windows.
+Make sure you have the following installed:
 
-Homebrew is a package manager for macOS.  
-You’ll use it to easily install Git, Python, Docker, etc.
-
-**Install Homebrew:**
-
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-**Verify Homebrew:**
-
-```bash
-brew --version
-```
-
-If you see a version number, you're good to go.
+* Python 3.10+
+* pip (Python package manager)
+* Docker (optional, for containerized environment)
 
 ---
 
-# 🧩 2. Install and Configure Git
+## Setup
 
-## Install Git
+1. Clone the repository:
 
-- **MacOS (using Homebrew)**
-
-```bash
-brew install git
+```
+git clone https://github.com/BrunoGarofalo/assignment12
+cd your-repo
 ```
 
-- **Windows**
+2. Create a virtual environment:
 
-Download and install [Git for Windows](https://git-scm.com/download/win).  
-Accept the default options during installation.
-
-**Verify Git:**
-
-```bash
-git --version
+```
+python -m venv venv
+source venv/bin/activate   # Linux/Mac
+venv\Scripts\activate      # Windows
 ```
 
----
+3. Install dependencies:
 
-## Configure Git Globals
-
-Set your name and email so Git tracks your commits properly:
-
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "your_email@example.com"
 ```
-
-Confirm the settings:
-
-```bash
-git config --list
-```
-
----
-
-## Generate SSH Keys and Connect to GitHub
-
-> Only do this once per machine.
-
-1. Generate a new SSH key:
-
-```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
-```
-
-(Press Enter at all prompts.)
-
-2. Start the SSH agent:
-
-```bash
-eval "$(ssh-agent -s)"
-```
-
-3. Add the SSH private key to the agent:
-
-```bash
-ssh-add ~/.ssh/id_ed25519
-```
-
-4. Copy your SSH public key:
-
-- **Mac/Linux:**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | pbcopy
-```
-
-- **Windows (Git Bash):**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | clip
-```
-
-5. Add the key to your GitHub account:
-   - Go to [GitHub SSH Settings](https://github.com/settings/keys)
-   - Click **New SSH Key**, paste the key, save.
-
-6. Test the connection:
-
-```bash
-ssh -T git@github.com
-```
-
-You should see a success message.
-
----
-
-# 🧩 3. Clone the Repository
-
-Now you can safely clone the course project:
-
-```bash
-git clone <repository-url>
-cd <repository-directory>
-```
-
----
-
-# 🛠️ 4. Install Python 3.10+
-
-## Install Python
-
-- **MacOS (Homebrew)**
-
-```bash
-brew install python
-```
-
-- **Windows**
-
-Download and install [Python for Windows](https://www.python.org/downloads/).  
-✅ Make sure you **check the box** `Add Python to PATH` during setup.
-
-**Verify Python:**
-
-```bash
-python3 --version
-```
-or
-```bash
-python --version
-```
-
----
-
-## Create and Activate a Virtual Environment
-
-(Optional but recommended)
-
-```bash
-python3 -m venv venv
-source venv/bin/activate   # Mac/Linux
-venv\Scripts\activate.bat  # Windows
-```
-
-### Install Required Packages
-
-```bash
 pip install -r requirements.txt
 ```
 
----
+## Running Tests
 
-# 🐳 5. (Optional) Docker Setup
+You can run all pytests tests locally with:
 
-> Skip if Docker isn't used in this module.
-
-## Install Docker
-
-- [Install Docker Desktop for Mac](https://www.docker.com/products/docker-desktop/)
-- [Install Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)
-
-## Build Docker Image
-
-```bash
-docker build -t <image-name> .
+```
+pytest
 ```
 
-## Run Docker Container
 
-```bash
-docker run -it --rm <image-name>
+To run a single test file:
+
+```
+pytest tests/integration/test_user.py
 ```
 
----
+## Running the model:
+- Start Docker with docker compose up or create the containers with docker compose up --build if they are not available yet
+- go to localhost:8000 to user the model
 
-# 🚀 6. Running the Project
+## Docker hub repository:
+- https://hub.docker.com/repository/docker/legioxi/assignment12/general
 
-- **Without Docker**:
 
-```bash
-python main.py
+
+# Manual Testing Guide (OpenAPI / Swagger UI)
+
+## Start the Application
+
+### Using Docker
+```
+docker compose up --build
 ```
 
-(or update this if the main script is different.)
-
-- **With Docker**:
-
-```bash
-docker run -it --rm <image-name>
+### Or run locally
+```
+uvicorn app.main:app --reload
 ```
 
----
+Open: http://localhost:8000/docs
 
-# 📝 7. Submission Instructions
+## Manual API Testing Steps
 
-After finishing your work:
+### Health Check
+GET /health
+Expected response:
+{ "status": "ok" }
 
-```bash
-git add .
-git commit -m "Complete Module X"
-git push origin main
+### Register a New User
+POST /auth/register
+Payload:
+```json
+{
+  "username": "johndoe",
+  "email": "john.doe@example.com",
+  "password": "SecurePass123!",
+  "confirm_password": "SecurePass123!",
+  "first_name": "John",
+  "last_name": "Doe"
+}
 ```
+### Login and Retrieve JWT Token
+POST /auth/login or /auth/token
+Copy the access_token.
 
-Then submit the GitHub repository link as instructed.
+### Authenticate Swagger UI
+Click Authorize → paste:
+Bearer <your_token_here>
 
----
+### Create a Calculation
+POST /calculations
+```json
+{
+  "type": "addition",
+  "inputs": [10, 5]
+}
+```
+### List Calculations
+GET /calculations
 
-# 🔥 Useful Commands Cheat Sheet
+### Update a Calculation
+PUT /calculations/{calc_id}
+```json
+{
+  "inputs": [100, 10],
+  "type": "addition"
+}
+```
+### Delete a Calculation
+DELETE /calculations/{calc_id}
 
-| Action                         | Command                                          |
-| ------------------------------- | ------------------------------------------------ |
-| Install Homebrew (Mac)          | `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` |
-| Install Git                     | `brew install git` or Git for Windows installer |
-| Configure Git Global Username  | `git config --global user.name "Your Name"`      |
-| Configure Git Global Email     | `git config --global user.email "you@example.com"` |
-| Clone Repository                | `git clone <repo-url>`                          |
-| Create Virtual Environment     | `python3 -m venv venv`                           |
-| Activate Virtual Environment   | `source venv/bin/activate` / `venv\Scripts\activate.bat` |
-| Install Python Packages        | `pip install -r requirements.txt`               |
-| Build Docker Image              | `docker build -t <image-name> .`                |
-| Run Docker Container            | `docker run -it --rm <image-name>`               |
-| Push Code to GitHub             | `git add . && git commit -m "message" && git push` |
 
----
+## Using the app
+Open: http://localhost:8000/dashboard
 
-# 📋 Notes
+Register new user, then you'll be automatically redirected to the login page
 
-- Install **Homebrew** first on Mac.
-- Install and configure **Git** and **SSH** before cloning.
-- Use **Python 3.10+** and **virtual environments** for Python projects.
-- **Docker** is optional depending on the project.
+After a successful login, select the operation type, then enther the operands divided by a comma; finally click calculate
 
----
+The results will appear in the table below
 
-# 📎 Quick Links
 
-- [Homebrew](https://brew.sh/)
-- [Git Downloads](https://git-scm.com/downloads)
-- [Python Downloads](https://www.python.org/downloads/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [GitHub SSH Setup Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+
