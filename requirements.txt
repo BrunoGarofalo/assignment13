@@ -34,6 +34,7 @@ pydantic-settings==2.7.1
 pydantic_core==2.27.2
 pyee==12.1.1
 pytest==8.3.4
+pytest-asyncio==0.23.6
 pytest-cov==6.0.0
 pytest-cover==3.0.0
 pytest-coverage==0.0

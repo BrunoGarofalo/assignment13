@@ -1,8 +1,8 @@
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone, timedelta
-from uuid import UUID
+from uuid import UUID, uuid4
 from typing import List
-
+from unittest.mock import MagicMock, patch
 from fastapi import Body, FastAPI, Depends, HTTPException, status, Request, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
@@ -10,8 +10,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from sqlalchemy.orm import Session
-
-import uvicorn
 
 from app.auth.dependencies import get_current_active_user
 from app.models.calculation import Calculation
@@ -263,10 +261,3 @@ def delete_calculation(
     db.delete(calculation)
     db.commit()
     return None
-
-# ------------------------------------------------------------------------------
-# Main Block to Run the Server
-# ------------------------------------------------------------------------------
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8001, log_level="info")
