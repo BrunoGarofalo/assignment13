@@ -26,7 +26,7 @@ Make sure you have the following installed:
 1. Clone the repository:
 
 ```
-git clone https://github.com/BrunoGarofalo/assignment12
+git clone https://github.com/BrunoGarofalo/assignment13
 cd your-repo
 ```
 
@@ -64,7 +64,7 @@ pytest tests/integration/test_user.py
 - go to localhost:8000 to user the model
 
 ## Docker hub repository:
-- https://hub.docker.com/repository/docker/legioxi/assignment12/general
+- https://hub.docker.com/repository/docker/legioxi/assignment13/general
 
 
 
@@ -136,13 +136,13 @@ DELETE /calculations/{calc_id}
 
 
 ## Using the app
-Open: http://localhost:8000/dashboard
+- Open: http://localhost:8000/dashboard
 
-Register new user, then you'll be automatically redirected to the login page
+- Register new user, then you'll be automatically redirected to the login page
 
-After a successful login, select the operation type, then enther the operands divided by a comma; finally click calculate
+- After a successful login, select the operation type, then enther the operands separated by a comma; finally click calculate
 
-The results will appear in the table below
+- The results will appear in the table below
 
 
 
